@@ -1,12 +1,18 @@
 from selenium import webdriver
-import sys
+
+import getpass, argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("username")
+args = parser.parse_args()
+username = args.username
+password = getpass.getpass()
 
 
 driver = webdriver.Chrome()
 driver.implicitly_wait(10)
 
-username=sys.argv[1]
-password=sys.argv[2]
+
     
 print(username, password)
 
@@ -21,11 +27,9 @@ def tobii_login(driver, link, username, password):
     driver.find_element_by_name("submit").click()
 
 
-
 def verify_login(driver):
     name = driver.find_element_by_class_name("gs-userbar__username").text
     print(name)
-    print('something')
     return name
 
 def log_out(driver):
