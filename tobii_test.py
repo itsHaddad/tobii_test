@@ -8,9 +8,12 @@ args = parser.parse_args()
 username = args.username
 password = getpass.getpass()
 
+with open('info.txt') as f:
+    content = f.readlines()
+info = [x.strip() for x in content]
 
-link = 'https://sprint.tobiipro.com'
-
+link = info[0]
+user_name = info[1]
 def tobii_navigate(driver, link):
     driver.get(link)
 def tobii_login(driver, username, password):
@@ -36,7 +39,7 @@ if __name__ == "__main__":
     tobii_navigate(driver, link)
     tobii_login(driver, username, password)
     name = verify_login(driver)
-    if (name == "Sprint Test"):
+    if (name == user_name):
         print("Login sucess")
         log_out(driver)
     else:
