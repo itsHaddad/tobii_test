@@ -1,5 +1,7 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+
 import getpass, argparse
 
 parser = argparse.ArgumentParser()
@@ -17,7 +19,6 @@ profilename = info[1]
 
 def tobii_navigate(driver, link):
     driver.get(link)
-    
 def tobii_login(driver, username, password):
     driver.find_element_by_name("email").send_keys(username)
     driver.find_element_by_name("password").send_keys(password)
@@ -30,20 +31,13 @@ def tobii_login(driver, username, password):
         # can't locate the element, so login success
         return True
 
-def verify_login(driver, profilename):
+def verify_login(driver):
     name = driver.find_element_by_class_name("gs-userbar__username").text
-    #return name
-    if (name == profilename):
-        print("Login success! Welcome {}!".format(profilename))
-        return 1
-    else:
-        print("Can't verify login! Fail")
-        return 0
+    return name
 
 def log_out(driver):
     driver.find_element_by_class_name("gs-userbar__dropdown-icon").click()
     driver.find_element_by_xpath('//*[@class="gs-dropdown__item gs-dropdown__item--nolink gs-dropdown__item--red gs-dropdown__item-btn-logout"]').click()
-    print("Logout success!") 
 
 
 if __name__ == "__main__":
@@ -54,12 +48,18 @@ if __name__ == "__main__":
     # run the test
     tobii_navigate(driver, link)
     if tobii_login(driver, username, password):
-        if verify_login(driver, profilename):
+        
+        name = verify_login(driver)
+        if (name == profilename):
+            print("Login success")
             log_out(driver)
-            #driver.close()
+            driver.close()
+        else:
+            print("Login failed")
+            driver.close()
 
     else:
         print("Login failed")
-        #driver.close()
+        driver.close()
 
     
